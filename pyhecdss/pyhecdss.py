@@ -1,6 +1,6 @@
 import collections
 #from . import pyheclib
-import pyheclib
+import .pyheclib
 import pandas as pd
 import numpy as np
 import os
