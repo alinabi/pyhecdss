@@ -428,6 +428,13 @@ class DSSFile:
             td = timedelta(days=28)
         elif interval.find('YEAR') >= 0:
             td = timedelta(days=365)
+        # TODO: Added to process IR-DAY and IR-DECADE, but this will make
+        # the routine bypass `get_freq_from_epart` for regular DAY intervals.
+        # Rewriting some of the logics here would be better for efficiency.
+        elif interval.find('DAY') >= 0:
+            td = timedelta(days=1)  # Assuming the maximum daily.
+        elif interval.find('DECADE') >= 0:
+            td = timedelta(days=365) # Assuming it is close to YEARLY
         else:
             td = timedelta(seconds=DSSFile.get_freq_from_epart(interval).nanos/1e9)
         return td
@@ -595,7 +602,7 @@ class DSSFile:
         elif epart.find('YEAR') >= 0:
             td = pd.offsets.YearBegin(n=int(str.split(epart, 'YEAR')[0]))
         elif epart.find('WEEK') >= 0:
-            td = pd.offsets.Minute(n=int(str.split(epart, 'MIN')[0]))
+            td = pd.offsets.Week(n=int(str.split(epart, 'WEEK')[0]))
         else:
             raise RuntimeError('Could not understand interval: ', epart)
         return td
